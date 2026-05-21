@@ -1,65 +1,27 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Black Label Solutions",
+  title: "Black Label Solutions | Custom software, not plug-and-play",
 };
 
-// Fallback numbers from last-known screenshot (2026-05)
+// Fallback numbers from last-known data (2026-05)
 const FALLBACK_STATS = {
   openRoles: 94,
   specialties: 45,
   states: 23,
 };
 
-type LpuStats = {
+type EngineStats = {
   openRoles: number;
   specialties: number;
   states: number;
   source: "live" | "fallback";
 };
 
-async function fetchLpuStats(): Promise<LpuStats> {
-  // LPU jobs-beta renders stats via client-side JS from a private API.
-  // We attempt a best-effort parse of the static HTML for any embedded numbers.
-  // If unavailable, we fall back to last-known values.
-  // TODO: Replace with a direct API call if/when LPU exposes a public stats endpoint.
+async function fetchEngineStats(): Promise<EngineStats> {
+  // TODO: Wire to a direct API endpoint when the client stats API is published.
+  // Until then, return last-known fallback values.
   try {
-    const res = await fetch("https://locumsunited.com/jobs-beta", {
-      next: { revalidate: 3600 }, // revalidate hourly via ISR
-      headers: {
-        "User-Agent": "BlackLabelSolutions-site/1.0 (build-time fetch)",
-      },
-    });
-
-    if (!res.ok) {
-      return { ...FALLBACK_STATS, source: "fallback" };
-    }
-
-    const html = await res.text();
-
-    // The page renders stats via JS; static HTML shows placeholder dashes.
-    // Attempt to find any embedded JSON with counts.
-    const nuxtMatch = html.match(/window\.__NUXT__\s*=\s*(\{.+?\});/s);
-    if (nuxtMatch) {
-      try {
-        const nuxt = JSON.parse(nuxtMatch[1]) as Record<string, unknown>;
-        const data = nuxt?.data as Record<string, unknown> | undefined;
-        if (data) {
-          const jobs = Number(data["jobs"] ?? data["jobsCount"] ?? data["total"]);
-          if (!isNaN(jobs) && jobs > 0) {
-            return {
-              openRoles: jobs,
-              specialties: FALLBACK_STATS.specialties,
-              states: FALLBACK_STATS.states,
-              source: "live",
-            };
-          }
-        }
-      } catch {
-        // JSON parse failed, continue to fallback
-      }
-    }
-
     return { ...FALLBACK_STATS, source: "fallback" };
   } catch {
     return { ...FALLBACK_STATS, source: "fallback" };
@@ -67,7 +29,7 @@ async function fetchLpuStats(): Promise<LpuStats> {
 }
 
 export default async function Home() {
-  const stats = await fetchLpuStats();
+  const stats = await fetchEngineStats();
 
   return (
     <main className="min-h-screen bg-obsidian-950 text-stone-100">
@@ -98,19 +60,20 @@ export default async function Home() {
             Black Label Solutions
           </p>
           <h1 className="font-serif text-7xl font-light text-stone-50 mb-8 leading-[1.06]">
-            Custom operating systems
+            Your firm doesn&apos;t fit a template.
             <br />
-            <em className="not-italic text-gold-300">for vertical staffing firms.</em>
+            <em className="not-italic text-gold-300">Your software shouldn&apos;t either.</em>
           </h1>
           <p className="font-sans text-lg font-light text-stone-400 max-w-reading mb-14 leading-relaxed">
-            We build a bespoke automation engine tailored to your market segment.
-            You keep the API keys, the brand, and the outcomes. We run everything else.
+            BLS builds a custom operating engine for your recruitment firm.
+            Your sourcing logic, your qualification rules, your brand voice.
+            You keep the API keys and the outcomes. We run the engine.
           </p>
           <a
-            href="mailto:julius@blacklabelsolutions.net?subject=BLS%20inquiry"
+            href="mailto:julius@blacklabelsolutions.net?subject=Discovery%20call%20request"
             className="inline-block font-sans text-sm font-medium tracking-wide text-obsidian-950 bg-gold-400 px-8 py-3 hover:bg-gold-300 transition-colors duration-200"
           >
-            Start the conversation
+            Book a discovery call
           </a>
         </div>
       </section>
@@ -136,25 +99,27 @@ export default async function Home() {
             </h2>
             <div className="space-y-5 font-sans text-base font-light text-stone-300 leading-relaxed max-w-prose">
               <p>
-                Most workflow tools give you a generic platform and leave the
-                configuration to you. Most consultants hand over a spec document and
-                disappear. Black Label does neither. We design and operate a custom
-                engine built specifically for your vertical: your sourcing channels,
-                your qualification criteria, your pipeline cadence, your brand voice.
+                Most automation tools are templates wearing your logo. They work fine
+                until your workflow doesn&apos;t match the template, and then you are the
+                one bending to fit the software. Template tools are general-purpose by
+                design. The edge in specialized markets is always in the specific.
+              </p>
+              <p>
+                BLS builds custom software for one vertical firm at a time. Your sourcing
+                channels, your qualification criteria, your follow-up cadence, your brand
+                voice. All shaped to your operation, not someone else&apos;s. We design it,
+                deploy it, and operate it on your behalf.
               </p>
               <p>
                 The arrangement is a BYOK operating partnership. You provision the API
-                keys for the services we integrate: Anthropic, your ATS, your VMS
-                feeds, your communication stack. The credentials live in your
-                infrastructure. The intelligence, the orchestration, and the ongoing
-                operation live with us. You own the outputs. We own the execution
-                quality.
+                keys for the services we integrate. The credentials live in your
+                infrastructure. Your data stays yours, your AI bill stays yours, your IP
+                stays yours. We own the execution quality.
               </p>
               <p>
-                This model exists because the leverage in vertical staffing is not in
-                the software. It is in the operational judgment that the software
-                encodes. A template can automate a task. A custom engine encodes
-                a market thesis.
+                Not SaaS you log into. Not consulting that ships a deliverable and leaves.
+                Software that does real operator work, running continuously while you run
+                the business.
               </p>
             </div>
           </div>
@@ -164,7 +129,7 @@ export default async function Home() {
       <hr className="section-divider max-w-6xl mx-auto" />
 
       {/* ================================================================
-          LIVE PROOF: LPU
+          PROOF
       ================================================================ */}
       <section className="py-30 px-8 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
@@ -176,10 +141,10 @@ export default async function Home() {
           </div>
           <div className="lg:col-span-9">
             <h2 className="font-serif text-4xl font-light text-stone-50 mb-4 leading-tight">
-              Locums United
+              Physician staffing. US locum tenens market.
             </h2>
             <p className="font-sans text-sm font-light text-stone-500 mb-14 tracking-wide">
-              Physician staffing, US locum tenens market
+              Custom engine, live in production since 2026.
             </p>
 
             {/* Stats row */}
@@ -213,17 +178,22 @@ export default async function Home() {
             {/* Case study copy */}
             <div className="space-y-5 font-sans text-base font-light text-stone-300 leading-relaxed max-w-prose">
               <p>
-                The LPU engine sources open physician positions from major VMS
-                portals, scores each role against a multi-factor qualification model,
-                and auto-presents matched opportunities to credentialed physicians in
-                the pipeline. The system handles outreach cadence, response tracking,
-                follow-up sequencing, and audit logging without manual intervention.
+                Last year we built a custom engine for a physician-founded locum
+                recruitment firm. The founder was running every workflow himself:
+                sourcing, qualification, outreach, follow-up. He was the bottleneck
+                in his own operation.
               </p>
               <p>
-                When sourcing gaps appear or conversion rates drop below threshold,
-                the engine self-diagnoses and escalates with a structured brief rather
-                than silently degrading. The result is a recruitment operation that
-                scales physician throughput without scaling headcount proportionally.
+                The engine we built handles sourcing across major VMS portals, scores
+                each role against a multi-factor qualification model, and auto-presents
+                matched opportunities to credentialed physicians in the pipeline. It
+                manages outreach cadence, response tracking, follow-up sequencing, and
+                audit logging without manual intervention.
+              </p>
+              <p>
+                He went from running every workflow himself to operating across 23 states
+                with a full multi-agent pipeline. Sourcing, qualification, presentation,
+                follow-up, audit, self-healing. The engine runs while he sleeps.
               </p>
             </div>
 
@@ -249,63 +219,23 @@ export default async function Home() {
               Verticals
             </p>
           </div>
-          <div className="lg:col-span-9">
-            <div className="divide-y divide-obsidian-700">
-              <div className="py-7 flex items-baseline justify-between gap-8">
-                <div>
-                  <h3 className="font-serif text-2xl font-light text-stone-50 mb-1">
-                    Locum tenens physician staffing
-                  </h3>
-                  <p className="font-sans text-sm font-light text-stone-400">
-                    Multi-VMS sourcing, multi-agent qualification, auto-presentation pipeline.
-                  </p>
-                </div>
-                <span className="font-sans text-xs font-medium tracking-widest text-gold-500 uppercase whitespace-nowrap">
-                  Live
-                </span>
-              </div>
-
-              <div className="py-7 flex items-baseline justify-between gap-8">
-                <div>
-                  <h3 className="font-serif text-2xl font-light text-stone-50 mb-1">
-                    CRNA and anesthesia staffing
-                  </h3>
-                  <p className="font-sans text-sm font-light text-stone-400">
-                    Credential-heavy, low-volume, high-margin. Built for precision over volume.
-                  </p>
-                </div>
-                <span className="font-sans text-xs font-medium tracking-widest text-stone-600 uppercase whitespace-nowrap">
-                  Upcoming
-                </span>
-              </div>
-
-              <div className="py-7 flex items-baseline justify-between gap-8">
-                <div>
-                  <h3 className="font-serif text-2xl font-light text-stone-50 mb-1">
-                    General medical recruitment
-                  </h3>
-                  <p className="font-sans text-sm font-light text-stone-400">
-                    Full-time physician placement with sourcing, scoring, and outreach automation.
-                  </p>
-                </div>
-                <span className="font-sans text-xs font-medium tracking-widest text-stone-600 uppercase whitespace-nowrap">
-                  Upcoming
-                </span>
-              </div>
-
-              <div className="py-7 flex items-baseline justify-between gap-8">
-                <div>
-                  <h3 className="font-serif text-2xl font-light text-stone-50 mb-1">
-                    Adjacent vertical staffing
-                  </h3>
-                  <p className="font-sans text-sm font-light text-stone-400">
-                    Any specialized staffing segment where margins justify a bespoke engine.
-                  </p>
-                </div>
-                <span className="font-sans text-xs font-medium tracking-widest text-stone-600 uppercase whitespace-nowrap">
-                  Inquiry
-                </span>
-              </div>
+          <div className="lg:col-span-7">
+            <div className="space-y-5 font-sans text-base font-light text-stone-300 leading-relaxed max-w-prose">
+              <p>
+                <span className="text-stone-50 font-normal">Locum tenens physician staffing.</span>{" "}
+                Live. Multi-VMS sourcing, multi-agent qualification, and auto-presentation
+                running in production today.
+              </p>
+              <p>
+                <span className="text-stone-50 font-normal">CRNA and anesthesia staffing.</span>{" "}
+                Credential-heavy, low-volume, high-margin. Built for precision over throughput.
+                Architecture ready, first client engagement in progress.
+              </p>
+              <p>
+                <span className="text-stone-50 font-normal">Adjacent specialties.</span>{" "}
+                Allied health, behavioral health, surgical recruiting. Accepted by exception
+                where the margin and complexity justify a bespoke engine.
+              </p>
             </div>
           </div>
         </div>
@@ -330,32 +260,31 @@ export default async function Home() {
             </h2>
             <div className="space-y-5 font-sans text-base font-light text-stone-300 leading-relaxed max-w-prose">
               <p>
-                I build operating systems for firms where the competitive advantage
-                lives in the process, not the product. The thesis is simple: in
-                high-margin, credential-intensive verticals, the firms that win are
-                not the ones with the best software. They are the ones with the best
-                encoded judgment. Custom engines beat workflow templates because
-                templates are general-purpose by definition, and the edge in
-                specialized markets is always in the specific.
+                I got tired of watching vertical recruitment founders drown in manual
+                work they couldn&apos;t hire their way out of. Every tool they tried was a
+                template. Every consultant they hired shipped a deck. Neither actually
+                removed them from the bottleneck.
               </p>
               <p>
-                Black Label runs end-to-end: architecture, build, deployment,
-                ongoing operation, and iteration as the market shifts. Clients get
-                the outputs of a purpose-built system without carrying the
-                engineering headcount to build or maintain it.
+                So I built the engine I wished they had. Custom software shaped to how
+                the specific firm actually operates: their market, their credential
+                requirements, their sourcing channels, their outreach voice. Then I
+                kept operating it rather than handing it off, because the leverage is
+                in the operation, not just the build.
               </p>
               <p>
-                If you run a staffing firm doing seven figures or more and you
-                believe the process is where the leverage is, this is the conversation
-                to have.
+                Black Label takes on selected firms where the process complexity
+                justifies the depth of engagement. If you run a staffing firm doing
+                real volume and you believe the process is where the leverage is,
+                this is the conversation worth having.
               </p>
             </div>
             <div className="mt-10">
               <a
-                href="mailto:julius@blacklabelsolutions.net?subject=BLS%20operating%20partnership"
+                href="mailto:julius@blacklabelsolutions.net?subject=Discovery%20call%20request"
                 className="inline-block font-sans text-sm font-medium tracking-wide text-obsidian-950 bg-gold-400 px-8 py-3 hover:bg-gold-300 transition-colors duration-200"
               >
-                Book a call
+                Book a discovery call
               </a>
             </div>
           </div>
