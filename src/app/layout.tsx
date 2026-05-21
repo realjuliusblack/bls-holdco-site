@@ -18,14 +18,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Black Label Solutions",
+  title: "Black Label Solutions | Custom software, not plug-and-play",
   description:
-    "Custom operating systems for vertical staffing firms. We build the engine. You keep the brand.",
+    "BLS builds custom operating engines for vertical recruitment firm founders. Your sourcing logic, your qualification rules, your brand voice. Not a template. Not a SaaS platform. Software shaped to your firm.",
   metadataBase: new URL("https://blacklabelsolutions.net"),
   openGraph: {
-    title: "Black Label Solutions",
+    title: "Custom software, not plug-and-play | Black Label Solutions",
     description:
-      "Custom operating systems for vertical staffing firms. We build the engine. You keep the brand.",
+      "BLS builds custom operating engines for vertical recruitment firm founders. Your sourcing logic, your qualification rules, your brand voice. Not a template. Not a SaaS platform.",
     url: "https://blacklabelsolutions.net",
     siteName: "Black Label Solutions",
     locale: "en_US",
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Black Label Solutions",
+    title: "Custom software, not plug-and-play | Black Label Solutions",
     description:
-      "Custom operating systems for vertical staffing firms. We build the engine. You keep the brand.",
+      "BLS builds custom operating engines for vertical recruitment firm founders. Your sourcing logic, your qualification rules, your brand voice. Not a template.",
   },
   robots: {
     index: true,
