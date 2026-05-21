@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-fraunces: "Fraunces", Georgia, serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #0a0908;
+  color: #f2efe9;
+}
+
+/* Restrained selection color */
+::selection {
+  background: #d4a843;
+  color: #0a0908;
+}
+
+/* Editorial horizontal rule */
+.rule-gold {
+  border: none;
+  border-top: 1px solid #a07a1a;
+  width: 3rem;
+  margin: 0;
+}
+
+/* Section divider */
+.section-divider {
+  border: none;
+  border-top: 1px solid #262422;
+}
+
+/* Smooth link underline on hover */
+.link-underline {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.link-underline:hover {
+  border-bottom-color: #d4a843;
+}
+
+/* Stat number styling */
+.stat-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
